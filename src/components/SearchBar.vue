@@ -1,57 +1,74 @@
 <template>
-  <div class="SearchContainer" :class="{'focused': isFocused}">
-    <input class="InputContent" :class="{'focused': isFocused}" maxlength="25" type="text" v-model="newCity"
-           v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
+  <div class="SearchContainer">
+    <div class="InputDiv" :class="{'focused': isFocused}">
+      <input class="InputContent" :class="{'focused': isFocused}" spellcheck="false" maxlength="25" type="text"
+             v-model="newCity"
+             v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
+    </div>
+    <select name="" id="" v-on:change="handleSelect">
+      <option></option>
+      <option :key="index"  v-for="(response,index) in responseCityData">{{response.name}} {{response.state}}</option>
+    </select>
   </div>
 </template>
 
 <script>
-import {reactive, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import debounce from "lodash.debounce"
 import axios from "axios";
 
-const API = 'https://api.geoapify.com/v1/geocode/autocomplete?text='
+const API = 'http://api.openweathermap.org/geo/1.0/direct?q='
 
 export default {
   name: 'SearchBar',
-  props: ['city', 'handleCityChanged'],
+  props: ['handleCityChanged'],
   setup(props, {emit}) {
     const newCity = ref('');
     const isFocused = ref(false);
-    const cityObject = reactive({
-      lat:'',
-      lon:''
+    const responseCityData=ref('')
+    const selected=ref(0)
+    const weatherObject=ref()
+
+    const handleSelect=(e)=>{
+      selected.value=e.target.selectedIndex
+    }
+    watch(selected,()=>{
+      weatherObject.value=responseCityData.value[selected.value-1]
+      emit('city-object-updated', weatherObject);
     })
     const handleFocusChanged = (value) => {
       isFocused.value = value;
     };
 
-    const handleNewCityChanged = (value) => {
-      newCity.value = value;
+    const handleNewCityChanged = () => {
+      emit('city-updated', newCity);
     };
 
     const update = debounce(() => {
-      axios.get(`${API}${newCity.value}&apiKey=${process.env.VUE_APP_AUTOCOMPLETE_KEY}`)
-          .then((response) => {
-            cityObject.lon=response.data.features[0].geometry.coordinates[0]
-            cityObject.lat=response.data.features[0].geometry.coordinates[1]
-            emit('city-object-updated', cityObject);
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-    }, 500)
+      if (newCity.value !== '') {
+        axios.get(`${API}${newCity.value}&limit=5&appid=${process.env.VUE_APP_WEATHER_KEY}`)
+            .then((response) => {
+              responseCityData.value=response.data
+            })
+            .catch((error) => {
+              console.log(error, "nie znaleziono")
+            })
+      }
+    }, 700)
 
     watch(newCity, () => {
+      emit('city-updated',newCity)
+      responseCityData.value=null
       update()
     })
 
     return {
       newCity,
       isFocused,
-      cityObject,
+      responseCityData,
       handleFocusChanged,
-      handleNewCityChanged
+      handleNewCityChanged,
+      handleSelect
     };
   },
 };
@@ -60,21 +77,34 @@ export default {
 <style scoped>
 .SearchContainer {
   display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   box-sizing: border-box;
-  margin-top: 4rem;
-  width: 25%;
-  height: 3rem;
+  width: 60%;
+  height: 70vh;
   position: relative;
 }
 
-.SearchContainer::after {
+
+.InputDiv {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: fit-content;
+}
+
+.InputDiv::after {
   content: "";
   width: 100%;
   height: 2px;
   background-color: rgba(255, 255, 255, 0.5);
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: -5px;
+  left: 50%;
+  transform: translate(-50%, 50%);
   transition: .3s ease;
 }
 
@@ -95,8 +125,12 @@ export default {
   color: rgba(255, 255, 255, 0.88);
 }
 
-.SearchContainer.focused::after {
+.InputDiv.focused::after {
   background-color: rgba(255, 255, 255, 0.88);
+}
+
+select{
+  margin-top: 2rem;
 }
 
 @media screen and (max-width: 1300px) {

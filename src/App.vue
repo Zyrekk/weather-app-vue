@@ -14,6 +14,7 @@ export default {
 
 <style>
 body {
+  color:white;
   margin: 0;
   padding: 0;
   font-family: 'Axiforma', sans-serif;
@@ -26,6 +27,6 @@ body {
 
 #app {
   min-height: 100vh;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 </style>
