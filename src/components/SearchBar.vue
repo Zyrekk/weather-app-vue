@@ -7,7 +7,7 @@
     </div>
     <select name="" id="" v-on:change="handleSelect">
       <option></option>
-      <option :key="index"  v-for="(response,index) in responseCityData">{{response.name}} {{response.state}}</option>
+      <option :key="index"  v-for="(response,index) in responseCityData">{{response.name}} {{voivodeshipTranslator(response.state)}}</option>
     </select>
   </div>
 </template>
@@ -16,11 +16,13 @@
 import {ref, watch} from "vue";
 import debounce from "lodash.debounce"
 import axios from "axios";
+import {voivodeshipTranslator} from "@/functions/voivodeshipTranslator";
 
 const API = 'http://api.openweathermap.org/geo/1.0/direct?q='
 
 export default {
   name: 'SearchBar',
+  methods: {voivodeshipTranslator},
   props: ['handleCityChanged'],
   setup(props, {emit}) {
     const newCity = ref('');
