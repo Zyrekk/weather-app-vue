@@ -38,12 +38,16 @@ export default {
     const cityInput=ref('')
 
     const weatherData = ref(null);
+    const weatherDataForecast = ref(null);
     watch(selectData,async ()=>{
       if(selectData.value!==''&&selectData.value!==''){
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
         weatherData.value.main.temp=Math.round(weatherData.value.main.temp)
         console.log(weatherData.value)
+        const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&appid=${process.env.VUE_APP_WEATHER_KEY}`);
+        weatherDataForecast.value = await responseForecast.json();
+        console.log(weatherDataForecast.value)
       }
     })
 

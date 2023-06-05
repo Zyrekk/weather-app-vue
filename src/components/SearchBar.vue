@@ -131,10 +131,6 @@ export default {
   background-color: rgba(255, 255, 255, 0.88);
 }
 
-select{
-  margin-top: 2rem;
-}
-
 @media screen and (max-width: 1300px) {
   .SearchContainer {
     width: 40%;
