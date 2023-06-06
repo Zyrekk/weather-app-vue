@@ -80,4 +80,14 @@ button{
   font-weight: 600;
 }
 
+@media screen and (max-width: 1300px) {
+  .LeftContainer {
+    position: unset;
+  }
+  .LeftContainer.Left{
+    transform: unset;
+
+  }
+}
+
 </style>

@@ -20,12 +20,21 @@ export default {
   height: 70vh;
   right: 0;
   transform: translate(0);
-  /*border:2px solid red;*/
   color: rgba(255, 255, 255, 0.76);
   transition: transform .3s;
 }
 .RightContainer.Right{
   transform: translate(100%);
+}
+
+@media screen and (max-width: 1300px) {
+  .RightContainer {
+    position: unset;
+  }
+
+  .RightContainer.Right{
+    transform: unset;
+  }
 }
 
 </style>

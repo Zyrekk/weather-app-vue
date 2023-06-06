@@ -17,7 +17,6 @@
 </template>
 <script>
 import SearchBar from './SearchBar.vue';
-// import WeatherPage from "@/components/WeatherPage.vue";
 import LeftContainer from "@/components/LeftContainer.vue";
 import RightContainer from "@/components/RightContainer.vue";
 import BottomContainer from "@/components/BottomContainer.vue";
@@ -80,7 +79,7 @@ export default {
   align-items: center;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.5);
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .TopContent{
@@ -90,6 +89,13 @@ export default {
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+}
+
+@media screen and (max-width: 1300px) {
+  .TopContent {
+    flex-direction: column;
+    height: unset;
+  }
 }
 
 </style>
