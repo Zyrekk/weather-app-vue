@@ -2,13 +2,15 @@
   <div class="SearchContainer">
     <div class="InputDiv" :class="{'focused': isFocused}">
       <input class="InputContent" :class="{'focused': isFocused}" spellcheck="false" maxlength="25" type="text"
-             v-model="newCity"
+             v-model="searchInput"
              v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
     </div>
-    <select name="" id="" v-on:change="handleSelect">
-      <option></option>
-      <option :key="index"  v-for="(response,index) in responseCityData">{{response.name}} {{voivodeshipTranslator(response.state)}}</option>
-    </select>
+    <div class="OptionBox" :class="{'visible':responseCityData}">
+      <div class="SingleOption"  @click="handleSelect(index)" :key="index"  v-for="(response,index) in responseCityData">
+        {{response.name}}, {{response.state}}
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -16,60 +18,63 @@
 import {ref, watch} from "vue";
 import debounce from "lodash.debounce"
 import axios from "axios";
-import {voivodeshipTranslator} from "@/functions/voivodeshipTranslator";
 
 const API = 'http://api.openweathermap.org/geo/1.0/direct?q='
 
 export default {
   name: 'SearchBar',
-  methods: {voivodeshipTranslator},
   props: ['handleCityChanged'],
   setup(props, {emit}) {
-    const newCity = ref('');
+    const searchInput = ref('');
     const isFocused = ref(false);
     const responseCityData=ref('')
-    const selected=ref(0)
+    const selected=ref(null)
     const weatherObject=ref()
 
-    const handleSelect=(e)=>{
-      selected.value=e.target.selectedIndex
+    const handleSelect=(index)=>{
+      selected.value=index+1
     }
     watch(selected,()=>{
-      weatherObject.value=responseCityData.value[selected.value-1]
-      emit('city-object-updated', weatherObject);
+      if(selected.value!==null){
+        weatherObject.value=responseCityData.value[selected.value-1]
+        emit('city-object-updated', weatherObject);
+      }
     })
     const handleFocusChanged = (value) => {
       isFocused.value = value;
     };
 
-    const handleNewCityChanged = () => {
-      emit('city-updated', newCity);
+    const handleSearchInputChanged = () => {
+      emit('search-input-updated', searchInput);
     };
 
     const update = debounce(() => {
-      if (newCity.value !== '') {
-        axios.get(`${API}${newCity.value}&limit=5&appid=${process.env.VUE_APP_WEATHER_KEY}`)
+      if (searchInput.value !== '') {
+        responseCityData.value=null
+        selected.value=null
+        axios.get(`${API}${searchInput.value}&limit=10&appid=${process.env.VUE_APP_WEATHER_KEY}`)
             .then((response) => {
               responseCityData.value=response.data
+              responseCityData.value=responseCityData.value.filter((v,i,a)=>a.findIndex(v2=>['name','state'].every(k=>v2[k] ===v[k]))===i)
             })
             .catch((error) => {
               console.log(error, "nie znaleziono")
             })
       }
-    }, 700)
+    }, 600)
 
-    watch(newCity, () => {
-      emit('city-updated',newCity)
+    watch(searchInput, () => {
+      handleSearchInputChanged()
       responseCityData.value=null
       update()
     })
 
     return {
-      newCity,
+      searchInput,
       isFocused,
       responseCityData,
       handleFocusChanged,
-      handleNewCityChanged,
+      handleSearchInputChanged,
       handleSelect
     };
   },
@@ -81,7 +86,7 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  padding-top: 25vh;
   box-sizing: border-box;
   width: 60%;
   height: 70vh;
@@ -129,6 +134,60 @@ export default {
 
 .InputDiv.focused::after {
   background-color: rgba(255, 255, 255, 0.88);
+}
+
+.OptionBox{
+  box-sizing: border-box;
+  margin-top: 2rem;;
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: fit-content;
+  opacity: 0;
+  transition: .5s;
+}
+
+.OptionBox.visible{
+  opacity: 1;
+}
+
+.SingleOption{
+  position: relative;
+  width: 100%;
+  font-size: 1rem;
+  text-align: center;
+  padding: .6rem 0;
+  background: rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  transition: .5s;
+}
+
+.SingleOption:after{
+  content: '';
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  /*background:rgba(0, 0, 0, 0.35) ;*/
+  bottom: 0;
+  left:0;
+}
+
+.SingleOption:first-child{
+  border-radius: 10px 10px 0 0;
+}
+
+.SingleOption:last-child{
+  border-radius: 0 0 10px 10px;
+}
+
+.SingleOption:last-child:after{
+  display: none;
+}
+
+.SingleOption:hover{
+  background: rgba(0, 0, 0, 0.55)
 }
 
 @media screen and (max-width: 1300px) {

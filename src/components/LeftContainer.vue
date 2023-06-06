@@ -1,11 +1,10 @@
 <template>
   <div class="LeftContainer" :class="{'Left':(!weatherData||!cityInput)}">
     <div class="Icon">
-<!--      <font-awesome-icon :icon="['fas', 'cloud']" />-->
-      <font-awesome-icon :icon="['fas', 'cloud-showers-heavy']" />
+      <font-awesome-icon v-if="weatherData" :icon="['fas', `${weatherTranslate(weatherData.weather[0])}`]" />
     </div>
-    <div class="WeatherName">Fog</div>
-    <div class="CityName" v-if="weatherData">{{weatherData.name}}</div>
+    <div class="WeatherName" v-if="weatherData">{{weatherData.weather[0].description}}</div>
+    <div class="CityName" v-if="selectData">{{selectData.name}}, {{selectData.state}}</div>
     <div class="Temperature" v-if="weatherData">{{weatherData.main.temp}}°C</div>
     <button><font-awesome-icon :icon="['fas', 'location-dot']" /> Change Location</button>
 
@@ -20,13 +19,15 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faCloud,faCloudShowersHeavy,faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { faCloud,faCloudShowersHeavy,faLocationDot,faSun,faThunderstorm,faSnowflake,faTornado,faWind,faSmog,faCloudSun} from '@fortawesome/free-solid-svg-icons'
+import {weatherTranslate} from "@/functions/weatherTranslate";
 
 /* add icons to the library */
-library.add(faCloud,faCloudShowersHeavy,faLocationDot)
+library.add(faCloud,faCloudShowersHeavy,faLocationDot,faSun,faThunderstorm,faSnowflake,faTornado,faWind,faSmog,faCloudSun)
 export default {
   name: "LeftContainer",
-  props:['weatherData','cityInput'],
+  methods: {weatherTranslate},
+  props:['weatherData','cityInput','selectData'],
   components:{
     FontAwesomeIcon
   },
@@ -42,7 +43,6 @@ export default {
   height: 70vh;
   left: 0;
   transform: translate(0);
-  /*border:2px solid red;*/
   color: rgba(255, 255, 255, 0.76);
   transition: transform .3s;
 }
