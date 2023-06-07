@@ -1,7 +1,7 @@
 <template>
   <div class="SearchContainer">
     <div class="InputDiv" :class="{'focused': isFocused}">
-      <input class="InputContent" :class="{'focused': isFocused}" spellcheck="false" maxlength="25" type="text"
+      <input class="InputContent" :class="{'focused': isFocused}" placeholder="City" spellcheck="false" maxlength="25" type="text"
              v-model="searchInput"
              v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
     </div>
@@ -107,7 +107,7 @@ export default {
   content: "";
   width: 100%;
   height: 2px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(59, 58, 58, 0.5);
   position: absolute;
   bottom: -5px;
   left: 50%;
@@ -122,18 +122,18 @@ export default {
   height: 100%;
   border: none;
   outline: none;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(38, 38, 38, 0.5);
   font-size: 1.3rem;
   text-align: center;
   transition: .3s ease;
 }
 
 .InputContent.focused {
-  color: rgba(255, 255, 255, 0.88);
+  color: #000;
 }
 
 .InputDiv.focused::after {
-  background-color: rgba(255, 255, 255, 0.88);
+  background: #000;
 }
 
 .OptionBox{

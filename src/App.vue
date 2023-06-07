@@ -14,14 +14,13 @@ export default {
 
 <style>
 body {
-  color:white;
   margin: 0;
   padding: 0;
   font-family: 'Axiforma', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url("./assets/background1.png") no-repeat center center;
-  background-size: cover;
+  /*background: url("./assets/background1.png") no-repeat center center;*/
+  /*background-size: cover;*/
 
 }
 

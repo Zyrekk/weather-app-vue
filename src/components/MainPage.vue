@@ -3,8 +3,8 @@
     <template #default>
       <div class="Container">
         <div class="TopContent">
-          <LeftContainer :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
           <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput" @city-object-updated="handleCityObjectUpdated"/>
+          <LeftContainer :image="image" :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
           <RightContainer :cityInput="cityInput" :weatherData="weatherData"/>
         </div>
         <BottomContainer :weatherData="weatherData" :cityInput="cityInput"/>
@@ -20,18 +20,19 @@ import SearchBar from './SearchBar.vue';
 import LeftContainer from "@/components/LeftContainer.vue";
 import RightContainer from "@/components/RightContainer.vue";
 import BottomContainer from "@/components/BottomContainer.vue";
+import {weatherTranslate} from "@/functions/weatherTranslate";
 import {ref, watch} from 'vue';
 
 export default {
   name: 'MainPage',
   components: {
     SearchBar,
-    // WeatherPage,
     LeftContainer,
     RightContainer,
     BottomContainer
   },
   setup() {
+    const image=ref('../../public/icons/01.d.png')
     const selectData=ref('')
 
     const cityInput=ref('')
@@ -42,13 +43,24 @@ export default {
       if(selectData.value!==''&&selectData.value!==''){
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
-        console.log(weatherData.value)
         weatherData.value.main.temp=Math.round(weatherData.value.main.temp)
-        // console.log(weatherData.value)
+        image.value=`${weatherTranslate(weatherData.value.weather[0])}`
+        /**
+         TO DO
+         **/
+        const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
+        const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
+        const currentDate = new Date();
+        if(currentDate>sunrise&&currentDate<sunset){
+          console.log("dzien")
+        }
+        else{
+          console.log("noc")
+        }
+        // console.log(date.toLocaleString())
+        // console.log(weatherData.value.sys)
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
-        // console.log(weatherDataForecast.value)
-
       }
     })
 
@@ -66,7 +78,7 @@ export default {
         // selectData.value=''
       }
     })
-    return {cityInput,selectData,weatherData,handleCityObjectUpdated,handleSearchInputUpdated}
+    return {cityInput,selectData,weatherData,image,handleCityObjectUpdated,handleSearchInputUpdated}
   }
 }
 </script>
@@ -78,7 +90,7 @@ export default {
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.5);
+  /*background: rgba(0, 0, 0, 0.5);*/
   min-height: 100vh;
 }
 
