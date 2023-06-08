@@ -82,7 +82,9 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 .SearchContainer {
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -107,7 +109,7 @@ export default {
   content: "";
   width: 100%;
   height: 2px;
-  background-color: rgba(59, 58, 58, 0.5);
+  background-color: rgba(229, 227, 227, 0.63);
   position: absolute;
   bottom: -5px;
   left: 50%;
@@ -116,24 +118,33 @@ export default {
 }
 
 .InputContent {
+  font-family: 'Montserrat', sans-serif;
   padding: 0 5px;
   background: transparent;
+  letter-spacing: 1px;
   width: 100%;
   height: 100%;
   border: none;
   outline: none;
-  color: rgba(38, 38, 38, 0.5);
+  color: rgba(229, 227, 227, 0.63);
   font-size: 1.3rem;
   text-align: center;
   transition: .3s ease;
 }
+.InputContent::placeholder{
+  color: rgba(229, 227, 227, 0.63);
+}
 
 .InputContent.focused {
-  color: #000;
+  color: #fff;
+}
+
+.InputContent.focused::placeholder{
+  color: #fff;
 }
 
 .InputDiv.focused::after {
-  background: #000;
+  background: #fff;
 }
 
 .OptionBox{
@@ -160,6 +171,7 @@ export default {
   text-align: center;
   padding: .6rem 0;
   background: rgba(0, 0, 0, 0.24);
+  letter-spacing: 1px;
   cursor: pointer;
   transition: .5s;
 }

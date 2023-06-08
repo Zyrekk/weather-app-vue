@@ -40,7 +40,7 @@ export default {
 .SingleWeatherTile{
   width: 10rem;
   height: 10rem;
-  background: purple;
+  /*background: purple;*/
 }
 
 @media screen and (max-width: 1300px) {

@@ -44,21 +44,17 @@ export default {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
         weatherData.value.main.temp=Math.round(weatherData.value.main.temp)
-        image.value=`${weatherTranslate(weatherData.value.weather[0])}`
-        /**
-         TO DO
-         **/
+        weatherData.value.main.feels_like=Math.round(weatherData.value.main.feels_like)
+        console.log(weatherData.value)
         const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
         const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
         const currentDate = new Date();
         if(currentDate>sunrise&&currentDate<sunset){
-          console.log("dzien")
+          image.value=`${weatherTranslate(weatherData.value.weather[0],'d')}`
         }
         else{
-          console.log("noc")
+          image.value=`${weatherTranslate(weatherData.value.weather[0],'n')}`
         }
-        // console.log(date.toLocaleString())
-        // console.log(weatherData.value.sys)
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
       }
@@ -90,7 +86,7 @@ export default {
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  /*background: rgba(0, 0, 0, 0.5);*/
+  background: rgba(0, 0, 0, 0.4);
   min-height: 100vh;
 }
 

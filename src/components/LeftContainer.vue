@@ -6,6 +6,7 @@
     <div class="CityName" v-if="selectData">{{ selectData.name }}</div>
     <div class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</div>
     <div class="Temperature" v-if="weatherData">{{ weatherData.main.temp }}°C</div>
+    <div class="WeatherName" v-if="weatherData">Feels Like {{ weatherData.main.feels_like}}°C</div>
   </div>
 </template>
 
@@ -18,6 +19,7 @@ export default {
 
 <style scoped>
 .LeftContainer {
+  letter-spacing: 1px;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -39,7 +41,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  padding: 4rem 0 0 3rem;
+  padding: 3rem 0 0 2.5rem;
 }
 
 img {
