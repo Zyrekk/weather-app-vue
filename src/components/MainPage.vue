@@ -3,7 +3,8 @@
     <template #default>
       <div class="Container">
         <div class="TopContent">
-          <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput" @city-object-updated="handleCityObjectUpdated"/>
+          <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput"
+                     @city-object-updated="handleCityObjectUpdated"/>
           <LeftContainer :image="image" :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
           <RightContainer :cityInput="cityInput" :weatherData="weatherData"/>
         </div>
@@ -32,49 +33,46 @@ export default {
     BottomContainer
   },
   setup() {
-    const image=ref('../../public/icons/01.d.png')
-    const selectData=ref('')
+    const image = ref('../../public/icons/01.d.png')
+    const selectData = ref('')
 
-    const cityInput=ref('')
+    const cityInput = ref('')
 
     const weatherData = ref(null);
     const weatherDataForecast = ref(null);
-    watch(selectData,async ()=>{
-      if(selectData.value!==''&&selectData.value!==''){
+    watch(selectData, async () => {
+      if (selectData.value !== '' && selectData.value !== '') {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
-        weatherData.value.main.temp=Math.round(weatherData.value.main.temp)
-        weatherData.value.main.feels_like=Math.round(weatherData.value.main.feels_like)
+        weatherData.value.main.temp = Math.round(weatherData.value.main.temp)
+        weatherData.value.main.feels_like = Math.round(weatherData.value.main.feels_like)
         console.log(weatherData.value)
         const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
         const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
         const currentDate = new Date();
-        if(currentDate>sunrise&&currentDate<sunset){
-          image.value=`${weatherTranslate(weatherData.value.weather[0],'d')}`
+        if (currentDate > sunrise && currentDate < sunset) {
+          image.value = `${weatherTranslate(weatherData.value.weather[0], 'd')}`
+        } else {
+          image.value = `${weatherTranslate(weatherData.value.weather[0], 'n')}`
         }
-        else{
-          image.value=`${weatherTranslate(weatherData.value.weather[0],'n')}`
-        }
-        const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
-        weatherDataForecast.value = await responseForecast.json();
+        // const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
+        // weatherDataForecast.value = await responseForecast.json();
       }
     })
 
-    const handleSearchInputUpdated=(searchInputUpdated)=>{
-      cityInput.value=searchInputUpdated.value
+    const handleSearchInputUpdated = (searchInputUpdated) => {
+      cityInput.value = searchInputUpdated.value
     }
 
-    const handleCityObjectUpdated=(cityObject)=>{
-      selectData.value=cityObject.value
+    const handleCityObjectUpdated = (cityObject) => {
+      selectData.value = cityObject.value
     }
 
-    watch(cityInput,()=>{
-      if (cityInput.value===''){
-        // weatherData.value=null
-        // selectData.value=''
+    watch(cityInput, () => {
+      if (cityInput.value === '') {
       }
     })
-    return {cityInput,selectData,weatherData,image,handleCityObjectUpdated,handleSearchInputUpdated}
+    return {cityInput, selectData, weatherData, image, handleCityObjectUpdated, handleSearchInputUpdated}
   }
 }
 </script>
@@ -90,7 +88,7 @@ export default {
   min-height: 100vh;
 }
 
-.TopContent{
+.TopContent {
   position: relative;
   display: flex;
   justify-content: center;

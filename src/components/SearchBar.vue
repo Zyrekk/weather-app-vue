@@ -1,13 +1,14 @@
 <template>
   <div class="SearchContainer">
     <div class="InputDiv" :class="{'focused': isFocused}">
-      <input class="InputContent" :class="{'focused': isFocused}" placeholder="City" spellcheck="false" maxlength="25" type="text"
+      <input class="InputContent" :class="{'focused': isFocused}" placeholder="City" spellcheck="false" maxlength="25"
+             type="text"
              v-model="searchInput"
              v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
     </div>
     <div class="OptionBox" :class="{'visible':responseCityData}">
-      <div class="SingleOption"  @click="handleSelect(index)" :key="index"  v-for="(response,index) in responseCityData">
-        {{response.name}}, {{response.state}}
+      <div class="SingleOption" @click="handleSelect(index)" :key="index" v-for="(response,index) in responseCityData">
+        {{ response.name }}, {{ response.state }}
       </div>
 
     </div>
@@ -27,16 +28,16 @@ export default {
   setup(props, {emit}) {
     const searchInput = ref('');
     const isFocused = ref(false);
-    const responseCityData=ref('')
-    const selected=ref(null)
-    const weatherObject=ref()
+    const responseCityData = ref('')
+    const selected = ref(null)
+    const weatherObject = ref()
 
-    const handleSelect=(index)=>{
-      selected.value=index+1
+    const handleSelect = (index) => {
+      selected.value = index + 1
     }
-    watch(selected,()=>{
-      if(selected.value!==null){
-        weatherObject.value=responseCityData.value[selected.value-1]
+    watch(selected, () => {
+      if (selected.value !== null) {
+        weatherObject.value = responseCityData.value[selected.value - 1]
         emit('city-object-updated', weatherObject);
       }
     })
@@ -50,12 +51,12 @@ export default {
 
     const update = debounce(() => {
       if (searchInput.value !== '') {
-        responseCityData.value=null
-        selected.value=null
+        responseCityData.value = null
+        selected.value = null
         axios.get(`${API}${searchInput.value}&limit=10&appid=${process.env.VUE_APP_WEATHER_KEY}`)
             .then((response) => {
-              responseCityData.value=response.data
-              responseCityData.value=responseCityData.value.filter((v,i,a)=>a.findIndex(v2=>['name','state'].every(k=>v2[k] ===v[k]))===i)
+              responseCityData.value = response.data
+              responseCityData.value = responseCityData.value.filter((v, i, a) => a.findIndex(v2 => ['name', 'state'].every(k => v2[k] === v[k])) === i)
             })
             .catch((error) => {
               console.log(error, "nie znaleziono")
@@ -65,7 +66,7 @@ export default {
 
     watch(searchInput, () => {
       handleSearchInputChanged()
-      responseCityData.value=null
+      responseCityData.value = null
       update()
     })
 
@@ -83,6 +84,7 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 .SearchContainer {
   font-family: 'Montserrat', sans-serif;
   display: flex;
@@ -131,7 +133,8 @@ export default {
   text-align: center;
   transition: .3s ease;
 }
-.InputContent::placeholder{
+
+.InputContent::placeholder {
   color: rgba(229, 227, 227, 0.63);
 }
 
@@ -139,7 +142,7 @@ export default {
   color: #fff;
 }
 
-.InputContent.focused::placeholder{
+.InputContent.focused::placeholder {
   color: #fff;
 }
 
@@ -147,7 +150,7 @@ export default {
   background: #fff;
 }
 
-.OptionBox{
+.OptionBox {
   box-sizing: border-box;
   margin-top: 2rem;;
   width: 30%;
@@ -160,11 +163,11 @@ export default {
   transition: .5s;
 }
 
-.OptionBox.visible{
+.OptionBox.visible {
   opacity: 1;
 }
 
-.SingleOption{
+.SingleOption {
   position: relative;
   width: 100%;
   font-size: 1rem;
@@ -176,29 +179,28 @@ export default {
   transition: .5s;
 }
 
-.SingleOption:after{
+.SingleOption:after {
   content: '';
   width: 100%;
   height: 3px;
   position: absolute;
-  /*background:rgba(0, 0, 0, 0.35) ;*/
   bottom: 0;
-  left:0;
+  left: 0;
 }
 
-.SingleOption:first-child{
+.SingleOption:first-child {
   border-radius: 10px 10px 0 0;
 }
 
-.SingleOption:last-child{
+.SingleOption:last-child {
   border-radius: 0 0 10px 10px;
 }
 
-.SingleOption:last-child:after{
+.SingleOption:last-child:after {
   display: none;
 }
 
-.SingleOption:hover{
+.SingleOption:hover {
   background: rgba(0, 0, 0, 0.55)
 }
 

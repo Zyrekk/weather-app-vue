@@ -34,12 +34,12 @@
 <script>
 export default {
   name: "RightContainer",
-  props:['weatherData','cityInput'],
+  props: ['weatherData', 'cityInput'],
 }
 </script>
 
 <style scoped>
-.RightContainer{
+.RightContainer {
   letter-spacing: 1px;
   position: absolute;
   display: flex;
@@ -51,11 +51,12 @@ export default {
   transform: translate(0);
   transition: transform .3s;
 }
-.RightContainer.Right{
+
+.RightContainer.Right {
   transform: translate(100%);
 }
 
-.Detail{
+.Detail {
   width: 11rem;
   font-size: 1.3rem;
   display: flex;
@@ -63,25 +64,25 @@ export default {
   gap: 5px;
 }
 
-.Content{
+.Content {
   font-weight: 700;
 }
 
-.Name{
+.Name {
   font-size: 1.2rem;
 }
 
-.Icon{
+.Icon {
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
 
-.Icon img{
+.Icon img {
   width: 20px;
 }
 
-.Description{
+.Description {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -93,7 +94,7 @@ export default {
     position: unset;
   }
 
-  .RightContainer.Right{
+  .RightContainer.Right {
     transform: unset;
   }
 }

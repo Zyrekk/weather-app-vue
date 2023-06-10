@@ -13,7 +13,7 @@
 <script>
 export default {
   name: "BottomContainer",
-  props:['weatherData','cityInput']
+  props: ['weatherData', 'cityInput']
 }
 </script>
 
@@ -25,10 +25,8 @@ export default {
   justify-content: space-evenly;
   flex-wrap: wrap;
   width: 100%;
-
   bottom: 0;
   transform: translateY(0);
-  /*border:2px solid #11ff00;*/
   transition: transform .3s;
   padding: 1rem;
 }
@@ -37,16 +35,16 @@ export default {
   transform: translateY(100%);
 }
 
-.SingleWeatherTile{
+.SingleWeatherTile {
   width: 10rem;
   height: 10rem;
-  /*background: purple;*/
 }
 
 @media screen and (max-width: 1300px) {
   .BottomContainer {
     position: unset;
   }
+
   .BottomContainer.Bottom {
     transform: unset;
   }
