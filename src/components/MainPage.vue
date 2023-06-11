@@ -6,7 +6,7 @@
       <LeftContainer :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
       <RightContainer :cityInput="cityInput" :weatherData="weatherData"/>
     </div>
-    <BottomContainer :weatherData="weatherData" :cityInput="cityInput"/>
+    <BottomContainer :weatherDataForecast="weatherDataForecast" :cityInput="cityInput"/>
   </div>
 </template>
 <script>
@@ -14,7 +14,6 @@ import SearchBar from './SearchBar.vue';
 import LeftContainer from "@/components/LeftContainer.vue";
 import RightContainer from "@/components/RightContainer.vue";
 import BottomContainer from "@/components/BottomContainer.vue";
-// import {weatherTranslate} from "@/functions/weatherTranslate";
 import {ref, watch} from 'vue';
 
 export default {
@@ -29,13 +28,15 @@ export default {
     const selectData = ref('')
     const cityInput = ref('')
     const weatherData = ref(null);
-    const weatherDataForecast = ref([]);
-
+    const weatherDataForecast = ref(null);
     watch(selectData, async () => {
       if (selectData.value !== '' && selectData.value !== '') {
+        const dayArray = []
+
         //CURRENT WEATHER API CALL
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
+        //CURRENT WEATHER ACTIONS
         weatherData.value.main.temp = Math.round(weatherData.value.main.temp)
         weatherData.value.main.feels_like = Math.round(weatherData.value.main.feels_like)
         weatherData.value.wind.speed = Math.round(weatherData.value.wind.speed * 3.6)
@@ -44,7 +45,8 @@ export default {
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
 
-        const dayArray = []
+
+        //FORECAST ACTIONS
         const currentDate = new Date().toISOString().slice(0, 10);
         weatherDataForecast.value.list.forEach((data) => {
           const date = data.dt_txt.split(" ")[0];
@@ -52,16 +54,21 @@ export default {
             const nameDay = new Date(date).toLocaleDateString('en-US', {weekday: 'long'});
             dayArray[date] = {
               day: nameDay,
-              max: data.main.temp_max,
-              min: data.main.temp_min
+              dayIcon:data.weather[0].icon,
+              max: Math.round(data.main.temp_max),
+              min: Math.round(data.main.temp_min),
             }
           } else {
-            dayArray[date].max = data.main.temp_max > dayArray[date].max ? data.main.temp_max : dayArray[date].max
-            dayArray[date].min = data.main.temp_min < dayArray[date].min ? data.main.temp_min : dayArray[date].min
+            dayArray[date].dayIcon = data.main.temp_max > dayArray[date].max ? data.weather[0].icon : dayArray[date].dayIcon
+            dayArray[date].max = data.main.temp_max > dayArray[date].max ? Math.round(data.main.temp_max) : dayArray[date].max
+            dayArray[date].min = data.main.temp_min < dayArray[date].min ? Math.round(data.main.temp_min) : dayArray[date].min
           }
         })
         delete dayArray[currentDate]
-        weatherDataForecast.value = dayArray
+        weatherDataForecast.value=[]
+        for (const date in dayArray) {
+          weatherDataForecast.value.push({date, ...dayArray[date]});
+        }
       }
     })
 
@@ -72,7 +79,7 @@ export default {
     const handleCityObjectUpdated = (cityObject) => {
       selectData.value = cityObject.value
     }
-    return {cityInput, selectData, weatherData, handleCityObjectUpdated, handleSearchInputUpdated}
+    return {cityInput, selectData, weatherData, weatherDataForecast, handleCityObjectUpdated, handleSearchInputUpdated}
   }
 }
 </script>
