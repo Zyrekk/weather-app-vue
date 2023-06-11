@@ -1,30 +1,30 @@
 <template>
   <div class="RightContainer" :class="{'Right':(!weatherData||!cityInput)}">
-    <div class="Detail">
+    <div class="Detail" v-if="weatherData">
       <div class="Icon">
         <img src="../assets/icons/humidity.png" alt="Humidity icon">
       </div>
       <div class="Description">
         <span class="Name">Humidity</span>
-        <span class="Content">50%</span>
+        <span class="Content">{{weatherData.main.humidity}}%</span>
       </div>
     </div>
-    <div class="Detail">
+    <div class="Detail" v-if="weatherData">
       <div class="Icon">
         <img src="../assets/icons/wind.png" alt="Humidity icon">
       </div>
       <div class="Description">
         <span class="Name">Wind Speed</span>
-        <span class="Content">5 km/h</span>
+        <span class="Content">{{weatherData.wind.speed}} km/h</span>
       </div>
     </div>
-    <div class="Detail">
+    <div class="Detail" v-if="weatherData">
       <div class="Icon">
         <img src="../assets/icons/pressure.png" alt="Humidity icon">
       </div>
       <div class="Description">
         <span class="Name">Air Pressure</span>
-        <span class="Content">1600 hPa</span>
+        <span class="Content">{{weatherData.main.pressure}} hPa</span>
       </div>
     </div>
 

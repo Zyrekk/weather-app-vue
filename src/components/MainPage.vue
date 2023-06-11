@@ -46,6 +46,7 @@ export default {
         weatherData.value = await response.json();
         weatherData.value.main.temp = Math.round(weatherData.value.main.temp)
         weatherData.value.main.feels_like = Math.round(weatherData.value.main.feels_like)
+        weatherData.value.wind.speed=Math.round(weatherData.value.wind.speed*3.6)
         console.log(weatherData.value)
         const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
         const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
@@ -55,8 +56,8 @@ export default {
         } else {
           image.value = `${weatherTranslate(weatherData.value.weather[0], 'n')}`
         }
-        // const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
-        // weatherDataForecast.value = await responseForecast.json();
+        const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
+        weatherDataForecast.value = await responseForecast.json();
       }
     })
 
@@ -67,11 +68,6 @@ export default {
     const handleCityObjectUpdated = (cityObject) => {
       selectData.value = cityObject.value
     }
-
-    watch(cityInput, () => {
-      if (cityInput.value === '') {
-      }
-    })
     return {cityInput, selectData, weatherData, image, handleCityObjectUpdated, handleSearchInputUpdated}
   }
 }

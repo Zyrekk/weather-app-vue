@@ -7,9 +7,8 @@
              v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
     </div>
     <div class="OptionBox" :class="{'visible':responseCityData}">
-      <div class="SingleOption" @click="handleSelect(index)" :key="index" v-for="(response,index) in responseCityData">
-        {{ response.name }}, {{ response.state }}
-      </div>
+      <span class="SingleOption" @click="handleSelect(index)" :key="index" v-for="(response,index) in responseCityData">
+        {{ response.formatted }}</span>
 
     </div>
   </div>
@@ -20,7 +19,8 @@ import {ref, watch} from "vue";
 import debounce from "lodash.debounce"
 import axios from "axios";
 
-const API = 'http://api.openweathermap.org/geo/1.0/direct?q='
+// const API = 'http://api.openweathermap.org/geo/1.0/direct?q='
+const GEOPIFY_API='https://api.geoapify.com/v1/geocode/autocomplete?text='
 
 export default {
   name: 'SearchBar',
@@ -28,7 +28,7 @@ export default {
   setup(props, {emit}) {
     const searchInput = ref('');
     const isFocused = ref(false);
-    const responseCityData = ref('')
+    const responseCityData = ref([])
     const selected = ref(null)
     const weatherObject = ref()
 
@@ -51,12 +51,19 @@ export default {
 
     const update = debounce(() => {
       if (searchInput.value !== '') {
-        responseCityData.value = null
-        selected.value = null
-        axios.get(`${API}${searchInput.value}&limit=10&appid=${process.env.VUE_APP_WEATHER_KEY}`)
-            .then((response) => {
-              responseCityData.value = response.data
-              responseCityData.value = responseCityData.value.filter((v, i, a) => a.findIndex(v2 => ['name', 'state'].every(k => v2[k] === v[k])) === i)
+        // responseCityData.value = null
+        // selected.value = null
+        axios.get(`${GEOPIFY_API}${searchInput.value}&format=json&apiKey=${process.env.VUE_APP_AUTOCOMPLETE_KEY}`)
+            .then((response)=>{
+              const cities =[]
+              response.data.results.forEach((data)=>{
+                if(data.city){
+                  cities.push(data)
+                }
+              })
+              responseCityData.value=cities
+              console.log(cities)
+              // responseCityData.value=response.data.results
             })
             .catch((error) => {
               console.log(error, "nie znaleziono")
@@ -153,7 +160,7 @@ export default {
 .OptionBox {
   box-sizing: border-box;
   margin-top: 2rem;;
-  width: 30%;
+  width: 35%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -170,7 +177,7 @@ export default {
 .SingleOption {
   position: relative;
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: center;
   padding: .6rem 0;
   background: rgba(0, 0, 0, 0.24);
