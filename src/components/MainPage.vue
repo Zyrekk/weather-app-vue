@@ -28,10 +28,9 @@ export default {
   setup() {
     const selectData = ref('')
     const cityInput = ref('')
-    // const dailyWeatherTemplate=ref([])
-
     const weatherData = ref(null);
     const weatherDataForecast = ref([]);
+
     watch(selectData, async () => {
       if (selectData.value !== '' && selectData.value !== '') {
         //CURRENT WEATHER API CALL
@@ -44,6 +43,7 @@ export default {
         //FORECAST WEATHER API CALL
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
+
         const dayArray = []
         const currentDate = new Date().toISOString().slice(0, 10);
         weatherDataForecast.value.list.forEach((data) => {
@@ -62,7 +62,6 @@ export default {
         })
         delete dayArray[currentDate]
         weatherDataForecast.value = dayArray
-        console.log(weatherDataForecast.value)
       }
     })
 
