@@ -1,6 +1,4 @@
 <template>
-  <Suspense>
-    <template #default>
       <div class="Container">
         <div class="TopContent">
           <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput"
@@ -10,11 +8,6 @@
         </div>
         <BottomContainer :weatherData="weatherData" :cityInput="cityInput"/>
       </div>
-    </template>
-    <template #fallback>
-      loading
-    </template>
-  </Suspense>
 </template>
 <script>
 import SearchBar from './SearchBar.vue';
@@ -42,12 +35,12 @@ export default {
     const weatherDataForecast = ref(null);
     watch(selectData, async () => {
       if (selectData.value !== '' && selectData.value !== '') {
+        //CURRENT WEATHER API CALL
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherData.value = await response.json();
         weatherData.value.main.temp = Math.round(weatherData.value.main.temp)
         weatherData.value.main.feels_like = Math.round(weatherData.value.main.feels_like)
         weatherData.value.wind.speed=Math.round(weatherData.value.wind.speed*3.6)
-        console.log(weatherData.value)
         const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
         const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
         const currentDate = new Date();
@@ -56,6 +49,7 @@ export default {
         } else {
           image.value = `${weatherTranslate(weatherData.value.weather[0], 'n')}`
         }
+        //FORECAST WEATHER API CALL
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
       }

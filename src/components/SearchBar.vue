@@ -51,8 +51,8 @@ export default {
 
     const update = debounce(() => {
       if (searchInput.value !== '') {
-        // responseCityData.value = null
-        // selected.value = null
+        responseCityData.value = null
+        selected.value = null
         axios.get(`${GEOPIFY_API}${searchInput.value}&format=json&apiKey=${process.env.VUE_APP_AUTOCOMPLETE_KEY}`)
             .then((response)=>{
               const cities =[]
@@ -62,8 +62,6 @@ export default {
                 }
               })
               responseCityData.value=cities
-              console.log(cities)
-              // responseCityData.value=response.data.results
             })
             .catch((error) => {
               console.log(error, "nie znaleziono")
