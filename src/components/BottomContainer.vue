@@ -1,23 +1,30 @@
 <template>
-  <div class="BottomContainer" :class="{'Bottom':(!weatherData||!cityInput)}">
-    <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
+  <div class="BottomContainer" :class="{'Bottom':(!weatherDataForecast||!cityInput)}">
+    <div class="SingleWeatherTile" v-for="(weather,key) in weatherDataForecast" :key="key">
+      <span class="Day" v-if="weatherDataForecast">{{weather.day}}</span>
+      <div class="TemperatureTile" v-if="weatherDataForecast">
+<!--        <img src="../assets/icons/01d.png" alt="day temperature icon">-->
+        <img :src="require(`../assets/icons/${weather.dayIcon}.png`)" alt="weather icon">
+        <span>{{weather.max}}°C</span>
+      </div>
+      <div class="TemperatureTile" v-if="weatherDataForecast">
+        <img src="../assets/icons/01n.png" alt="night temperature icon">
+        <span>{{weather.min}}°C</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "BottomContainer",
-  props: ['weatherData', 'cityInput']
+  props: ['weatherDataForecast', 'cityInput']
 }
 </script>
 
+
 <style scoped>
 .BottomContainer {
-  border: 2px solid red;
   box-sizing: border-box;
   position: absolute;
   display: flex;
@@ -35,9 +42,27 @@ export default {
 }
 
 .SingleWeatherTile {
-  border: 2px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
   width: 10rem;
   height: 10rem;
+}
+.TemperatureTile{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Day{
+  font-size: 1.1rem;
+  padding: 1rem 0;
+}
+
+img{
+  width: 40px;
 }
 
 @media screen and (max-width: 1300px) {

@@ -3,10 +3,10 @@
       <div class="Icon" v-if="weatherData">
         <img :src="require(`../assets/icons/${weatherData.weather[0].icon}.png`)" alt="weather icon">
       </div>
-    <div class="CityName" v-if="selectData">{{ selectData.city }}</div>
-    <div class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</div>
-    <div class="Temperature" v-if="weatherData">{{ weatherData.main.temp }}°C</div>
-    <div class="WeatherName" v-if="weatherData">Feels Like {{ weatherData.main.feels_like}}°C</div>
+    <span class="CityName" v-if="selectData">{{ selectData.city }}</span>
+    <span class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</span>
+    <span class="Temperature" v-if="weatherData">{{ weatherData.main.temp }}°C</span>
+    <span class="WeatherName" v-if="weatherData">Feels Like {{ weatherData.main.feels_like}}°C</span>
   </div>
 </template>
 
