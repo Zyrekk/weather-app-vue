@@ -5,8 +5,6 @@
     <div class="SingleWeatherTile"></div>
     <div class="SingleWeatherTile"></div>
     <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
-    <div class="SingleWeatherTile"></div>
   </div>
 </template>
 
@@ -19,6 +17,7 @@ export default {
 
 <style scoped>
 .BottomContainer {
+  border: 2px solid red;
   box-sizing: border-box;
   position: absolute;
   display: flex;
@@ -36,6 +35,7 @@ export default {
 }
 
 .SingleWeatherTile {
+  border: 2px solid red;
   width: 10rem;
   height: 10rem;
 }

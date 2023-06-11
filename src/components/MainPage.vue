@@ -1,20 +1,20 @@
 <template>
-      <div class="Container">
-        <div class="TopContent">
-          <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput"
-                     @city-object-updated="handleCityObjectUpdated"/>
-          <LeftContainer :image="image" :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
-          <RightContainer :cityInput="cityInput" :weatherData="weatherData"/>
-        </div>
-        <BottomContainer :weatherData="weatherData" :cityInput="cityInput"/>
-      </div>
+  <div class="Container">
+    <div class="TopContent">
+      <SearchBar @search-input-updated="handleSearchInputUpdated" :cityInput="cityInput"
+                 @city-object-updated="handleCityObjectUpdated"/>
+      <LeftContainer :selectData="selectData" :cityInput="cityInput" :weatherData="weatherData"/>
+      <RightContainer :cityInput="cityInput" :weatherData="weatherData"/>
+    </div>
+    <BottomContainer :weatherData="weatherData" :cityInput="cityInput"/>
+  </div>
 </template>
 <script>
 import SearchBar from './SearchBar.vue';
 import LeftContainer from "@/components/LeftContainer.vue";
 import RightContainer from "@/components/RightContainer.vue";
 import BottomContainer from "@/components/BottomContainer.vue";
-import {weatherTranslate} from "@/functions/weatherTranslate";
+// import {weatherTranslate} from "@/functions/weatherTranslate";
 import {ref, watch} from 'vue';
 
 export default {
@@ -26,13 +26,12 @@ export default {
     BottomContainer
   },
   setup() {
-    const image = ref('../../public/icons/01.d.png')
     const selectData = ref('')
-
     const cityInput = ref('')
+    // const dailyWeatherTemplate=ref([])
 
     const weatherData = ref(null);
-    const weatherDataForecast = ref(null);
+    const weatherDataForecast = ref([]);
     watch(selectData, async () => {
       if (selectData.value !== '' && selectData.value !== '') {
         //CURRENT WEATHER API CALL
@@ -40,18 +39,30 @@ export default {
         weatherData.value = await response.json();
         weatherData.value.main.temp = Math.round(weatherData.value.main.temp)
         weatherData.value.main.feels_like = Math.round(weatherData.value.main.feels_like)
-        weatherData.value.wind.speed=Math.round(weatherData.value.wind.speed*3.6)
-        const sunrise = new Date(weatherData.value.sys.sunrise * 1000); // Convert seconds to milliseconds
-        const sunset = new Date(weatherData.value.sys.sunset * 1000); // Convert seconds to milliseconds
-        const currentDate = new Date();
-        if (currentDate > sunrise && currentDate < sunset) {
-          image.value = `${weatherTranslate(weatherData.value.weather[0], 'd')}`
-        } else {
-          image.value = `${weatherTranslate(weatherData.value.weather[0], 'n')}`
-        }
+        weatherData.value.wind.speed = Math.round(weatherData.value.wind.speed * 3.6)
+
         //FORECAST WEATHER API CALL
         const responseForecast = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${selectData.value.lat}&lon=${selectData.value.lon}&units=metric&appid=${process.env.VUE_APP_WEATHER_KEY}`);
         weatherDataForecast.value = await responseForecast.json();
+        const dayArray = []
+        const currentDate = new Date().toISOString().slice(0, 10);
+        weatherDataForecast.value.list.forEach((data) => {
+          const date = data.dt_txt.split(" ")[0];
+          if (!dayArray[date]) {
+            const nameDay = new Date(date).toLocaleDateString('en-US', {weekday: 'long'});
+            dayArray[date] = {
+              day: nameDay,
+              max: data.main.temp_max,
+              min: data.main.temp_min
+            }
+          } else {
+            dayArray[date].max = data.main.temp_max > dayArray[date].max ? data.main.temp_max : dayArray[date].max
+            dayArray[date].min = data.main.temp_min < dayArray[date].min ? data.main.temp_min : dayArray[date].min
+          }
+        })
+        delete dayArray[currentDate]
+        weatherDataForecast.value = dayArray
+        console.log(weatherDataForecast.value)
       }
     })
 
@@ -62,7 +73,7 @@ export default {
     const handleCityObjectUpdated = (cityObject) => {
       selectData.value = cityObject.value
     }
-    return {cityInput, selectData, weatherData, image, handleCityObjectUpdated, handleSearchInputUpdated}
+    return {cityInput, selectData, weatherData, handleCityObjectUpdated, handleSearchInputUpdated}
   }
 }
 </script>

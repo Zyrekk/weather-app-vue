@@ -1,7 +1,7 @@
 <template>
   <div class="LeftContainer" :class="{'Left':(!weatherData||!cityInput)}">
       <div class="Icon" v-if="weatherData">
-        <img :src="require(`../assets/icons/${image}`)" alt="weather icon">
+        <img :src="require(`../assets/icons/${weatherData.weather[0].icon}.png`)" alt="weather icon">
       </div>
     <div class="CityName" v-if="selectData">{{ selectData.city }}</div>
     <div class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</div>
