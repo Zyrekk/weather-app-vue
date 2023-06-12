@@ -3,10 +3,12 @@
       <div class="Icon" v-if="weatherData">
         <img :src="require(`../assets/icons/${weatherData.weather[0].icon}.png`)" alt="weather icon">
       </div>
-    <span class="CityName" v-if="selectData">{{ selectData.city }}</span>
-    <span class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</span>
-    <span class="Temperature" v-if="weatherData">{{ weatherData.main.temp }}°C</span>
-    <span class="WeatherName" v-if="weatherData">Feels Like {{ weatherData.main.feels_like}}°C</span>
+    <div class="Info">
+      <span class="CityName" v-if="selectData">{{ selectData.city }}</span>
+      <span class="WeatherName" v-if="weatherData">{{ weatherData.weather[0].description }}</span>
+      <span class="Temperature" v-if="weatherData">{{ weatherData.main.temp }}°C</span>
+      <span class="WeatherName" v-if="weatherData">Feels Like {{ weatherData.main.feels_like}}°C</span>
+    </div>
   </div>
 </template>
 
@@ -35,6 +37,13 @@ export default {
 
 }
 
+.Info{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 0 3rem;
+}
+
 .Icon {
   font-size: 3rem;
   display: flex;
@@ -50,17 +59,16 @@ img {
 
 .CityName {
   font-size: 1.6rem;
-  padding: 0 0 0 3rem;
 }
 
 .WeatherName {
   font-size: 1rem;
-  padding: 0.2rem 0 0 3rem;
+  padding: 0.2rem 0 0 0;
 }
 
 .Temperature {
   font-size: 2rem;
-  padding: 1rem 0 0 3rem;
+  padding: 1rem 0 0 0;
   font-weight: 700;
 }
 
@@ -68,6 +76,40 @@ img {
 @media screen and (max-width: 1300px) {
   .LeftContainer {
     position: unset;
+    height: unset;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Icon {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0 0 0;
+  }
+
+  .Info{
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    padding: unset;
+  }
+
+  .CityName {
+    text-align: center;
+    padding: unset;
+    justify-content: center;
+  }
+
+  .WeatherName {
+    text-align: center;
+    padding: unset;
+  }
+
+  .Temperature {
+    text-align: center;
+    padding: unset;
   }
 
   .LeftContainer.Left {

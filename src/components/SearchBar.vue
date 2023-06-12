@@ -7,7 +7,7 @@
              v-on:focus="handleFocusChanged(true)" v-on:blur="handleFocusChanged(false)">
     </div>
     <div class="OptionBox" :class="{'visible':responseCityData}">
-      <span class="SingleOption" @click="handleSelect(index)" :key="index" v-for="(response,index) in responseCityData">
+      <span  class="SingleOption" @click="handleSelect(index)" :key="index" v-for="(response,index) in responseCityData">
         {{ response.formatted }}</span>
 
     </div>
@@ -28,7 +28,7 @@ export default {
   setup(props, {emit}) {
     const searchInput = ref('');
     const isFocused = ref(false);
-    const responseCityData = ref([])
+    const responseCityData = ref(null)
     const selected = ref(null)
     const weatherObject = ref()
 
@@ -36,9 +36,11 @@ export default {
       selected.value = index + 1
     }
     watch(selected, () => {
-      if (selected.value !== null) {
+      if (selected.value !== null ) {
         weatherObject.value = responseCityData.value[selected.value - 1]
         emit('city-object-updated', weatherObject);
+        selected.value=null
+        responseCityData.value=null
       }
     })
     const handleFocusChanged = (value) => {
@@ -79,6 +81,7 @@ export default {
       searchInput,
       isFocused,
       responseCityData,
+      selected,
       handleFocusChanged,
       handleSearchInputChanged,
       handleSelect
@@ -110,6 +113,7 @@ export default {
   align-items: center;
   width: 30%;
   height: fit-content;
+  margin-bottom: 2rem;
 }
 
 .InputDiv::after {
@@ -163,13 +167,15 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: fit-content;
+  height: 0;
   opacity: 0;
   transition: .5s;
+  /*transition: height 1s ease;*/
 }
 
 .OptionBox.visible {
   opacity: 1;
+  height: fit-content;
 }
 
 .SingleOption {
@@ -211,23 +217,30 @@ export default {
 
 @media screen and (max-width: 1300px) {
   .SearchContainer {
-    width: 40%;
+    width: 100%;
+    height: unset;
+    padding-top: 5rem;
+  }
+  .OptionBox{
+    width: 60%;
+    justify-content: flex-end;
+  }
+  .OptionBox.visible {
+    overflow-y: hidden;
+    width: 60%;
+    /*justify-content: flex-end;*/
+    height: 100%;
   }
 
-  .InputContent {
-    font-size: 1.2rem;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .SearchContainer {
+  .InputDiv{
     width: 60%;
   }
 
   .InputContent {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
+
 
 
 </style>

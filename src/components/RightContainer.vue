@@ -92,6 +92,18 @@ export default {
 @media screen and (max-width: 1300px) {
   .RightContainer {
     position: unset;
+    height: unset;
+    justify-content: center;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .Detail {
+    width: 11rem;
+    font-size: 1.3rem;
+    display: flex;
+    padding: 4rem 0 0 0;
+    gap: 5px;
   }
 
   .RightContainer.Right {
