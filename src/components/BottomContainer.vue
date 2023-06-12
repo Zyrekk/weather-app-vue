@@ -68,6 +68,9 @@ img{
 @media screen and (max-width: 1300px) {
   .BottomContainer {
     position: unset;
+    margin-top: 2rem;
+    gap: 4rem;
+    flex-wrap: wrap;
   }
 
   .BottomContainer.Bottom {

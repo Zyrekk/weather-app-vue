@@ -93,6 +93,7 @@ export default {
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.4);
   min-height: 100vh;
+  transition: .3s;
 }
 
 .TopContent {
@@ -102,12 +103,14 @@ export default {
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  transition: .3s;
 }
 
 @media screen and (max-width: 1300px) {
   .TopContent {
     flex-direction: column;
     height: unset;
+    gap: 1rem;
   }
 }
 
