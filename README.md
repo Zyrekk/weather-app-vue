@@ -1,5 +1,9 @@
 # weather-app-vue
 
+#### Simple weather app
+## Live demo
+#### https://konradzyra-weather.netlify.app
+
 ## Project setup
 ```
 yarn install
